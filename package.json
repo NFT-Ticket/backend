@@ -1,0 +1,19 @@
+{
+  "name": "nft-backend",
+  "version": "1.0.0",
+  "description": "Backend repo for NFT (Non Fungible Ticket)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NFT-Ticket/backend.git"
+  },
+  "author": "Roshan Poudel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NFT-Ticket/backend/issues"
+  },
+  "homepage": "https://github.com/NFT-Ticket/backend#readme"
+}
