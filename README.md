@@ -8,6 +8,7 @@
 3. Install `nodemon` to automatically restart the node process everytime a file is changed
    `sudo npm install -g nodemon`
 4. Install required packages `npm install`
-5. Use Nodemon to automatically run the backend server `nodemon`
-6. Server has been set to run on `port 8080`.
+5. Download the `.env` file from discord server and save it to the root directory of the repository.
+6. Use Nodemon to automatically run the backend server `nodemon`
+7. Server has been set to run on `port 8080`.
    Use your browser to test `http://localhost:8080`

@@ -9,6 +9,8 @@ bin-release/
 
 # Node modules
 /node_modules
+# Environment variables
+.env
 # Executables
 *.swf
 *.air
