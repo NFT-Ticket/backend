@@ -1,25 +1,29 @@
 {
-  "name": "nft-backend",
-  "version": "1.0.0",
-  "description": "Backend repo for NFT (Non Fungible Ticket)",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/NFT-Ticket/backend.git"
-  },
-  "author": "Roshan Poudel",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/NFT-Ticket/backend/issues"
-  },
-  "homepage": "https://github.com/NFT-Ticket/backend#readme",
-  "dependencies": {
-    "dotenv": "^16.0.0",
-    "express": "^4.17.3",
-    "mongodb": "^4.4.1",
-    "mongoose": "^6.2.4"
-  }
+	"name": "nft-backend",
+	"version": "1.0.0",
+	"description": "Backend repo for NFT (Non Fungible Ticket)",
+	"main": "index.js",
+	"scripts": {
+    "start": "node index.js",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/NFT-Ticket/backend.git"
+	},
+	"author": "Roshan Poudel",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/NFT-Ticket/backend/issues"
+	},
+	"homepage": "https://github.com/NFT-Ticket/backend#readme",
+	"engines": {
+		"node": "14.17.0"
+	},
+	"dependencies": {
+		"dotenv": "^16.0.0",
+		"express": "^4.17.3",
+		"mongodb": "^4.4.1",
+		"mongoose": "^6.2.4"
+	}
 }
