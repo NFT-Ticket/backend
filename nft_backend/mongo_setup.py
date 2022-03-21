@@ -1,20 +1,21 @@
 import os
 
-import bson
 import mongoengine
-from dotenv import load_dotenv
-
-from mongoengine import *
 from bson import ObjectId
+from dotenv import load_dotenv
+from mongoengine import *
 
-load_dotenv()
 
-db_name = os.getenv("db")
-hostname = os.getenv("dbHost")
-username = os.getenv("dbUser")
-pwd = os.getenv("dbPass")
+def setup():
+    load_dotenv()
 
-mongoengine.connect(db=db_name, host=hostname, username=username, password=pwd)
+    db_name = os.getenv("db")
+    hostname = os.getenv("dbHost")
+    username = os.getenv("dbUser")
+    pwd = os.getenv("dbPass")
+
+    mongoengine.connect(db=db_name, host=hostname, username=username, password=pwd)
+    # mongoengine.connect(db=db_name, host="localhost:8070")
 
 
 class User(Document):
@@ -36,9 +37,6 @@ class EventGeo(EmbeddedDocument):
     city = StringField()
     state = StringField()
     dateTime = DateTimeField(required=True)
-    age_restriction = BooleanField()
-    images = ListField(ImageField)
-    tickets_remaining = IntField()
 
     lat_long = PointField()  # TODO: Prolly best used with google maps integration
 
@@ -48,6 +46,9 @@ class Event(Document):
                        unique=True, primary_key=True)
     vendor_id = ReferenceField(User, reverse_delete_rule=CASCADE)
     geo = EmbeddedDocumentField(EventGeo, required=True)
+    age_restriction = BooleanField()
+    images = ListField(ImageField)
+    tickets_remaining = IntField()
 
 
 class Ticket(Document):
