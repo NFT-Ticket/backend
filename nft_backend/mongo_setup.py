@@ -8,7 +8,6 @@ from mongoengine import *
 
 def setup():
     load_dotenv()
-
     db_name = os.getenv("db")
     hostname = os.getenv("dbHost")
     username = os.getenv("dbUser")
