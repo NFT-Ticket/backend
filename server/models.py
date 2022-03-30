@@ -11,6 +11,9 @@ class User(models.Model):
     is_seller = models.BooleanField(blank=False)
     wallet_hash = models.CharField(max_length=60, blank=False)
 
+    def __str__(self):
+        return f"id: {self._id}, name: {self.first_name + ' ' + self.last_name}"
+
 
 class EventGeo(models.Model):
     _id = models.ObjectIdField()
