@@ -1,13 +1,13 @@
 from Server.models import *
-from django.http import JsonResponse
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from Server.serializer import *
 
-# Create your views here.
 
 
+@api_view(['GET'])
 def user_list(request):
     users = User.objects.all() #complex data type
-    user_list = list(users.values())
-    return JsonResponse({
-        "users": user_list
-    })
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
     

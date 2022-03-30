@@ -8,7 +8,7 @@ class User(models.Model):
     first_name = models.CharField(max_length=60, blank=False)
     last_name = models.CharField(max_length=60, blank=False)
     email = models.EmailField(blank=False)
-    is_seller = models.IntegerField(blank=False)
+    is_seller = models.BooleanField(blank=False)
     wallet_hash = models.CharField(max_length=60, blank=False)
 
 
@@ -23,14 +23,18 @@ class EventGeo(models.Model):
     lat_long = models.IntegerField()  # TODO: Prolly best used with google maps integration
 
 
+class URL(models.Model):
+   link = models.URLField()
+   class Meta:
+        abstract = True
+
 class Event(models.Model):
     _id = models.ObjectIdField()
     vendor_id = models.ForeignKey(User, on_delete=models.CASCADE)
     geo = models.EmbeddedField(EventGeo, blank=False)
     age_restriction = models.BooleanField(blank=False)
-    #images = models.ArrayField(model_container=models.URLField)
+    images = models.ArrayField(model_container=URL, default=list)
     tickets_remaining = models.IntegerField()
-
 
 class Ticket(models.Model):
     # TODO: Determine if the primary key is a combination (hash, id) or just (hash)
