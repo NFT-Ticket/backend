@@ -1,4 +1,4 @@
-from djongo import models
+from django.db import models
 
 
 # Create your models here.
@@ -12,6 +12,7 @@ class User(models.Model):
     def __str__(self):
         return f"name: {self.first_name + ' ' + self.last_name} email: {self.email}"
 
+
 # class EventGeo(models.Model):
 #     name = models.CharField(max_length=60, blank=False)
 #     location_name = models.CharField(max_length=60, blank=False)
@@ -23,15 +24,17 @@ class User(models.Model):
 
 
 class URL(models.Model):
-   link = models.URLField()
-   class Meta:
+    link = models.URLField()
+
+    class Meta:
         abstract = True
 
+
 class Event(models.Model):
-    vendor_id = models.ForeignKey(User, on_delete=models.CASCADE) #If user deleted, delete all associated events
-    #geo = models.EmbeddedField(EventGeo, blank=False)
+    vendor_id = models.ForeignKey(User, on_delete=models.CASCADE)  # If user deleted, delete all associated events
+    # geo = models.EmbeddedField(EventGeo, blank=False)
     age_restriction = models.BooleanField(blank=False)
-    images = models.ArrayField(model_container=URL, default=list)
+    # images = models.ListField(model_container=URL, default=list)
     tickets_remaining = models.IntegerField()
 
 

@@ -4,8 +4,8 @@ from Server.models import *
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model=User
-        fields=('__all__')
+        model = User
+        fields = "__all__"
 
 
 # class EventGeoSerializer(serializers.ModelSerializer):
@@ -13,12 +13,14 @@ class UserSerializer(serializers.ModelSerializer):
 #         model=EventGeo
 #         fields=('__all__')
 
+
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
-        model=Event
-        fields=('__all__')
+        model = Event
+        fields = "__all__"
+
 
 class TicketSerializer(serializers.ModelSerializer):
     class Meta:
-        model=Ticket
-        fields=('__all__')
+        model = Ticket
+        fields = "__all__"
