@@ -48,6 +48,9 @@ INSTALLED_APPS = [
 # TODO: Whitelist FrontEnd domain only in production
 CORS_ORIGIN_ALLOW_ALL = True
 
+ALLOWED_HOSTS = ['nfticket.com', 'localhost', '127.0.0.1']
+
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -82,22 +85,25 @@ WSGI_APPLICATION = 'nft_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-# mongo_setup.setup()
-
-DB_USER, DB_PASS = os.getenv('dbUser'), os.getenv('dbPass')
-DB_HOST, DB = os.getenv('dbHost'), os.getenv('db')
-DB_URI = f'mongodb+srv://{DB_USER}:{DB_PASS}@{DB_HOST}/{DB}?retryWrites=true&w=majority'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'CLIENT': {
-            'host': DB_URI,
-            'name': DB,
-            'authMechanism': 'SCRAM-SHA-1'
+        'ENGINE': 'django.db.backends.mysql',  
+        'NAME': os.getenv('db'),            
+        'USER': os.getenv('dbUser'),
+        'PASSWORD': os.getenv('dbPass'),
+        'HOST': os.getenv('dbHost'),
+        'PORT': '3306',
+        'OPTIONS':  {
+            'ssl': {'ca': './ssl/server-ca.pem',
+            'cert': './ssl/client-cert.pem',
+            'key': './ssl/client-key.pem'
+            }
         }
     }
 }
+
+
 
 
 # Password validation

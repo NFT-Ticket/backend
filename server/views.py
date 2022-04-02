@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from Server.serializer import *
-
+from djongo import models
 
 
 @api_view(['GET'])
@@ -16,10 +16,7 @@ def user_list(request):
 @api_view(['GET'])
 def user(request, user_id):
     try:
-        print(user_id)
-        print(list(User.objects.all()))
-        print(User.objects.get(first_name="TestFirst"))
-        user = User.objects.get(first_name="TestFirst")
+        user = User.objects.get(pk=user_id)
         serializer = UserSerializer(user)
         return Response(serializer.data)
     except  User.DoesNotExist:
