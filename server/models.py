@@ -32,16 +32,25 @@ class URL(models.Model):
 
 class Event(models.Model):
     # If user deleted, delete all associated events
-    vendor_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    vendor = models.ForeignKey(User, on_delete=models.CASCADE)
     # geo = models.EmbeddedField(EventGeo, blank=False)
     age_restriction = models.BooleanField(blank=False)
     # images = models.ListField(model_container=URL, default=list)
     tickets_remaining = models.IntegerField()
+    name = models.CharField(max_length=60, default='')
+    description = models.CharField(max_length=256, default='')
+    location_name = models.CharField(max_length=60, default='')
+    address = models.CharField(max_length=60, default='')
+    city = models.CharField(max_length=30, default='')
+    state = models.CharField(max_length=30, default='')
+    date = models.DateField(default='2000-01-01')
+    time = models.TimeField(default='00:00:00')
 
 
 class Ticket(models.Model):
     # TODO: Determine if the primary key is a combination (hash, id) or just (hash)
     # TODO: Whatever the NFT hash is
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, default=1)
     hash = models.CharField(max_length=60, blank=False)
     seat = models.CharField(max_length=60)
     # TODO: Consider a LazyReferenceField
