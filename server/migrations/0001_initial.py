@@ -15,7 +15,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='User',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('first_name', models.CharField(max_length=30)),
                 ('last_name', models.CharField(max_length=30)),
                 ('email', models.EmailField(max_length=254)),
@@ -26,21 +27,25 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Ticket',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('hash', models.CharField(max_length=60)),
                 ('seat', models.CharField(max_length=60)),
                 ('price', models.IntegerField()),
                 ('sale', models.BooleanField()),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Server.user')),
+                ('owner', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='Server.user')),
             ],
         ),
         migrations.CreateModel(
             name='Event',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name='ID')),
                 ('age_restriction', models.BooleanField()),
                 ('tickets_remaining', models.IntegerField()),
-                ('vendor_id', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='Server.user')),
+                ('vendor_id', models.ForeignKey(
+                    on_delete=django.db.models.deletion.CASCADE, to='Server.user')),
             ],
         ),
     ]

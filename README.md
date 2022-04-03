@@ -4,6 +4,7 @@
 
 Look at the tree below to understand where to put `.env` file and `ssl` folder
 
+<!-- prettier-ignore-start -->
 . (backend)
 ├── README.md
 ├── Server/
@@ -13,6 +14,7 @@ Look at the tree below to understand where to put `.env` file and `ssl` folder
 ├── ssl/
 ├── venv/
 └── .env
+<!-- prettier-ignore-end -->
 
 ### Install Virtual Environment
 

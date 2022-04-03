@@ -31,7 +31,8 @@ class URL(models.Model):
 
 
 class Event(models.Model):
-    vendor_id = models.ForeignKey(User, on_delete=models.CASCADE)  # If user deleted, delete all associated events
+    # If user deleted, delete all associated events
+    vendor_id = models.ForeignKey(User, on_delete=models.CASCADE)
     # geo = models.EmbeddedField(EventGeo, blank=False)
     age_restriction = models.BooleanField(blank=False)
     # images = models.ListField(model_container=URL, default=list)
@@ -40,8 +41,10 @@ class Event(models.Model):
 
 class Ticket(models.Model):
     # TODO: Determine if the primary key is a combination (hash, id) or just (hash)
-    hash = models.CharField(max_length=60, blank=False)  # TODO: Whatever the NFT hash is
+    # TODO: Whatever the NFT hash is
+    hash = models.CharField(max_length=60, blank=False)
     seat = models.CharField(max_length=60)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)  # TODO: Consider a LazyReferenceField
+    # TODO: Consider a LazyReferenceField
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
     price = models.IntegerField(blank=False)
     sale = models.BooleanField(blank=False)
