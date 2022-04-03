@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from Server.serializer import *
+from django.db.models import Count
 
 
 @api_view(["GET"])
@@ -24,6 +25,20 @@ def user(request, user_id):
         serializer = UserSerializer(user)
         return Response(serializer.data)
     except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+@api_view(["POST"])
+def modify_user(request, user_id):
+    try:
+        user = User(id=user_id)
+        user.first_name = request.data['first_name']
+        user.last_name = request.data['last_name']
+        user.email = request.data['email']
+        user.is_seller = request.data['is_seller']
+        user.wallet_hash = request.data['wallet_hash']
+        user.save()
+        return Response(status=status.HTTP_200_OK)
+    except Exception:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(["GET"])
@@ -49,6 +64,27 @@ def event(request, event_id):
     except Event.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+@api_view(["POST"])
+def modify_event(request, event_id):
+    try:
+        data = request.data
+        event = Event(id=event_id)
+        event.age_restriction = data['age_restriction']
+        event.tickets_remaining = data['tickets_remaining']
+        event.name = data['name']
+        event.description = data['description']
+        event.location_name = data['location_name']
+        event.address = data['address']
+        event.city = data['city']
+        event.state = data['state']
+        event.date = data['date']
+        event.time = data['time']
+        event.vendor_id = data['vendor_id']
+        event.save()
+        return Response(status=status.HTTP_200_OK)
+    except Event.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
 @api_view(["GET"])
 def user_ticket(request, user_id):
     try:
@@ -66,3 +102,12 @@ def ticket(response, ticket_id):
         return Response(serializer.data)
     except Ticket.DoesNotExist:
         return Response(status=status.HTPP_404_NOT_FOUND)
+
+@api_view(["GET"])
+def event_ticket(request, event_id):
+    try:
+        tickets = Ticket.objects.filter(event_id=event_id)
+        serializer = TicketSerializer(tickets, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Ticket.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
