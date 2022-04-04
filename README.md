@@ -6,15 +6,15 @@ Look at the tree below to understand where to put `.env` file and `ssl` folder
 
 <!-- prettier-ignore-start -->
 
-. (backend)
-├── README.md
-├── Server/
-├── manage.py
-├── nft_backend/
-├── requirements.txt
-├── ssl/
-├── venv/
-└── .env
+. (backend) \
+├── README.md  \
+├── Server/  \
+├── manage.py  \
+├── nft_backend/  \
+├── requirements.txt  \
+├── ssl/ \
+├── venv/ \
+└── .env 
 
 <!-- prettier-ignore-end -->
 
@@ -36,3 +36,9 @@ The server runs by default at `port 8000` using `python3 manage.py runserver` or
 ### List out Dependencies
 
 If you make any changes to the files and install some dependencies, list them out in `requirement.txt` file using the command `pip3 freeze > requirements.txt`
+
+## REST API Design
+
+`/admin` is for Django Admin page
+`/api/user` lists all users
+`/api/user/<id>` returns the user with `<id>`

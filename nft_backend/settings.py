@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "corsheaders",
-    "Server.apps.ServerConfig",  # Server App
+    "server.apps.ServerConfig",  # Server App
 ]
 # Allow Cross Origin Requests on all origins
 # TODO: Whitelist FrontEnd domain only in production
