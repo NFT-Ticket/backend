@@ -19,7 +19,7 @@ indexercl = IndexerClient(INDEXER_TOKEN, INDEXER_ADDRESS)
 
 print(kcl.list_wallets())
 
-## Anonymous Account 1
+# Anonymous Account 1
 # anon_mnemonic_1 = "multiply wrong typical flavor purpose spider zoo gallery desert away enroll ancient rail spirit candy stem digital logic daring cake income stomach address able leave"
 # acct1 = account.address_from_private_key(to_private_key(anon_mnemonic_1))
 # print(fundAccount(client, "V7HGZ26UID2O7DIY44FD57Q2CJSWNUVNCEF2RLGKQZ5JB366ZHF5XQSKLA", 111222333))
