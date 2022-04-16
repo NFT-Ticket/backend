@@ -42,13 +42,13 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
     "server.apps.ServerConfig",  # Server App
+    "firebase_auth"
 ]
 # Allow Cross Origin Requests on all origins
 # TODO: Whitelist FrontEnd domain only in production
 CORS_ORIGIN_ALLOW_ALL = True
 
 ALLOWED_HOSTS = ["nfticket.com", "localhost", "127.0.0.1"]
-
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -84,7 +84,7 @@ WSGI_APPLICATION = "nft_backend.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-
+# TODO: Change the respective fields to some host provider once we are ready to deploy
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
@@ -98,7 +98,6 @@ DATABASES = {
         },
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
@@ -117,6 +116,15 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+# Authentication
+# https://www.django-rest-framework.org/api-guide/authentication/
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',  # TODO Check if this authenticator is needed
+        'firebase_auth.authentication.FirebaseAuthentication',
+    ),
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
