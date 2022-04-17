@@ -1,9 +1,13 @@
+from urllib import response
 from server.models import *
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from server.serializer import *
 from django.db.models import Count
+from django.core import serializers
+import json
+from django.http import HttpResponse, JsonResponse
 
 
 @api_view(["GET"])
@@ -24,7 +28,7 @@ def register_user(request):
 @api_view(["GET"])
 def user(request, user_id):
     try:
-        user = User.objects.get(pk=user_id)
+        user = User.objects.get(email=user_id)
         serializer = UserSerializer(user)
         return Response(serializer.data)
     except User.DoesNotExist:
@@ -122,4 +126,19 @@ def event_ticket(request, event_id):
         serializer = TicketSerializer(tickets, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Ticket.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def get_emails(request):
+    emails = User.objects.values('email')
+    emails = [email["email"] for email in emails]
+    return JsonResponse(emails, safe=False)
+
+
+@api_view(["GET"])
+def get_usernames(request):
+    # TODO: Change to username after DB change
+    usernames = User.objects.values('first_name')
+    usernames = [username["first_name"] for username in usernames]
+    return JsonResponse(usernames, safe=False)

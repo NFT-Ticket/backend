@@ -47,7 +47,8 @@ INSTALLED_APPS = [
 # TODO: Whitelist FrontEnd domain only in production
 CORS_ORIGIN_ALLOW_ALL = True
 
-ALLOWED_HOSTS = ["nfticket.com", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["nfticket.com", "localhost",
+                 "127.0.0.1", "fe4b-130-245-192-3.ngrok.io"]
 
 
 MIDDLEWARE = [

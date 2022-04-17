@@ -1,6 +1,7 @@
 from algosdk.future.transaction import *
 import client
 import json
+from AlgorandAccount import *
 
 
 #   Utility function used to print created asset for account and assetid
@@ -50,9 +51,9 @@ def create_nft(nft_name, amt, creator, manager):
         unit_name=nft_name,
         asset_name=nft_name,
         manager=manager.public_key,
-        reserve="",
-        freeze="",
-        clawback="",
+        reserve=manager.public_key,
+        freeze=manager.public_key,
+        clawback=manager.public_key,
         url="https://iamroshanpoudel.com",
         decimals=0)
 
@@ -91,3 +92,12 @@ def create_nft(nft_name, amt, creator, manager):
 
     except Exception as e:
         print(e)
+
+
+# nft_name = "Roshan"
+# amt = 1
+# pk = "V7WASWYSD7AEVPM6H46SWZB25CR7LQ5C275RE2VBCHSC7NU7FRRBKKHJK4"
+# sk = "K9Cd233ad3xb6rF9Z82vjluJvmujulFAeA9m8D0UPQSv7AlbEh/ASr2ePz0rZDroo/XDotf7EmqhEeQvtp8sYg=="
+# creator = AlgorandAccount(pk, sk)
+# create_nft(nft_name, amt, creator, creator)
+# asset_id = "84222697"
