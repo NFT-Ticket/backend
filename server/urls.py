@@ -3,10 +3,8 @@ from django.urls import path
 from server import views
 
 urlpatterns = [
-    path("user/", views.user_list),
-    path(r"user/<str:user_id>/", views.user),
-    path("register_user/", views.register_user),
-    path(r"modify_user/<str:user_id>/", views.modify_user),
+    path("user/", views.user),
+    path(r"user/<str:email_id>/", views.user_with_id),
 
     path("event/", views.event_list),
     path(r"event/<str:event_id>/", views.event),
@@ -17,7 +15,6 @@ urlpatterns = [
     path(r"ticket/<str:ticket_id>/", views.ticket),
     path(r"event_ticket/<str:event_id>/", views.event_ticket),
 
-    path(r"email", views.get_emails),
-    path(r"username", views.get_usernames),
-
+    path(r"email/", views.get_emails),
+    path(r"username/", views.get_usernames),
 ]

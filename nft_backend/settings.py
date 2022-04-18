@@ -29,7 +29,6 @@ SECRET_KEY = os.getenv("secretKey")
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -120,12 +119,12 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Authentication
 # https://www.django-rest-framework.org/api-guide/authentication/
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',  # TODO Check if this authenticator is needed
-        'firebase_auth.authentication.FirebaseAuthentication',
-    ),
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'rest_framework.authentication.SessionAuthentication',  # TODO Check if this authenticator is needed
+#         'firebase_auth.authentication.FirebaseAuthentication',
+#     ),
+# }
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/

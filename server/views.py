@@ -4,60 +4,53 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from server.serializer import *
-from django.db.models import Count
-from django.core import serializers
-import json
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 
 
-@api_view(["GET"])
-def user_list(request):
-    users = User.objects.all()  # complex data type
-    serializer = UserSerializer(users, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+@api_view(["GET", "POST"])
+def user(request):
+    if request.method == 'GET':
+        users = User.objects.all()  # complex data type
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    elif request.method == 'POST':
+        data = request.data
+        serializer = UserSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(["POST"])
-def register_user(request):
-    data = request.data
-    User.objects.create(first_name=data['first_name'], last_name=data['last_name'],
-                        email=data['email'], is_seller=data['is_seller'], wallet_hash=data['wallet_hash'])
-    return Response(status=status.HTTP_200_OK)
-
-
-@api_view(["GET"])
-def user(request, user_id):
+@api_view(["GET", "PUT", "DELETE"])
+def user_with_id(request, email_id):
     try:
-        user = User.objects.get(email=user_id)
+        user = User.objects.get(pk=email_id)
         serializer = UserSerializer(user)
-        return Response(serializer.data)
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-
-@api_view(["POST"])
-def modify_user(request, user_id):
-    try:
-        user = User(id=user_id)
-        user.first_name = request.data['first_name']
-        user.last_name = request.data['last_name']
-        user.email = request.data['email']
-        user.is_seller = request.data['is_seller']
-        user.wallet_hash = request.data['wallet_hash']
-        user.save()
-        return Response(status=status.HTTP_200_OK)
-    except Exception:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == 'GET':
+        return Response(serializer.data)
+    elif request.method == "PUT":
+        serializer = UserSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == "DELETE":
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@api_view(["GET"])
+@ api_view(["GET"])
 def event_list(request):
     events = Event.objects.all()
     serializer = EventSerializer(events, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(["POST"])
+@ api_view(["POST"])
 def register_event(request):
     data = request.data
     Event.objects.create(age_restriction=data['age_restriction'], tickets_remaining=data['tickets_remaining'], vendor_id=data['vendor_id'],
@@ -67,7 +60,7 @@ def register_event(request):
     return Response(status=status.HTTP_200_OK)
 
 
-@api_view(["GET"])
+@ api_view(["GET"])
 def event(request, event_id):
     try:
         event = Event.objects.get(pk=event_id)
@@ -77,7 +70,7 @@ def event(request, event_id):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(["POST"])
+@ api_view(["POST"])
 def modify_event(request, event_id):
     try:
         data = request.data
@@ -99,7 +92,7 @@ def modify_event(request, event_id):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(["GET"])
+@ api_view(["GET"])
 def user_ticket(request, user_id):
     try:
         tickets = Ticket.objects.filter(owner_id=user_id)
@@ -109,7 +102,7 @@ def user_ticket(request, user_id):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-@api_view(["GET"])
+@ api_view(["GET"])
 def ticket(response, ticket_id):
     try:
         ticket = Ticket.objects.get(pk=ticket_id)
@@ -119,7 +112,7 @@ def ticket(response, ticket_id):
         return Response(status=status.HTPP_404_NOT_FOUND)
 
 
-@api_view(["GET"])
+@ api_view(["GET"])
 def event_ticket(request, event_id):
     try:
         tickets = Ticket.objects.filter(event_id=event_id)
@@ -129,16 +122,15 @@ def event_ticket(request, event_id):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(["GET"])
+@ api_view(["GET"])
 def get_emails(request):
     emails = User.objects.values('email')
     emails = [email["email"] for email in emails]
     return JsonResponse(emails, safe=False)
 
 
-@api_view(["GET"])
+@ api_view(["GET"])
 def get_usernames(request):
-    # TODO: Change to username after DB change
-    usernames = User.objects.values('first_name')
-    usernames = [username["first_name"] for username in usernames]
+    usernames = User.objects.values('username')
+    usernames = [username["username"] for username in usernames]
     return JsonResponse(usernames, safe=False)

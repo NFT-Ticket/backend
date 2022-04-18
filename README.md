@@ -39,6 +39,24 @@ If you make any changes to the files and install some dependencies, list them ou
 
 ## REST API Design
 
-`/admin` is for Django Admin page
-`/api/user` lists all users
-`/api/user/<id>` returns the user with `<id>`
+#### Admin Routes
+
+`GET /admin` is for Django Admin page
+
+#### Utility Routes
+
+Helper routes to be used to show warnings during signup
+`GET /api/username` returns a list of all usernames in db
+`GET /api/email` returns a list of all emails in db
+
+#### User Routes
+
+`GET /api/user` lists all users \
+`POST /api/user` adds new user to the db \
+`GET /api/user/<email_id>` returns the user with `<email_id>` \
+`PUT /api/user/<email_id>` modifies the user with `<email_id>`
+`DELETE /api/user/<email_id>` deletes the user with `<email_id>`
+
+#### Other Routes
+
+Not fully tested yet. check `server/views.py` and `server/urls.py`
