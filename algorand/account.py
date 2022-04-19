@@ -1,13 +1,14 @@
 from algosdk import account, mnemonic
-from . import algoaccount, client
+from . import algoaccount
+from .client import Client
 
 # Just a random account for testing purposes
 my_address = "V7WASWYSD7AEVPM6H46SWZB25CR7LQ5C275RE2VBCHSC7NU7FRRBKKHJK4"
 my_private = "K9Cd233ad3xb6rF9Z82vjluJvmujulFAeA9m8D0UPQSv7AlbEh/ASr2ePz0rZDroo/XDotf7EmqhEeQvtp8sYg=="
 
 # Second account
-public = "3G5TFB6TVU24TAMLF6QTNJPDX45QU55KMHLLC3TSX4QVX5ZPPHZGRBGQRE"
-private = "DvpAYMeiaweWRlNi5K/kraxcIUKeezUyqE8W6Lcm7x/ZuzKH0601yYGLL6E2peO/Owp3qmHWsW5yvyFb9y958g=="
+public = "G75SW7GOF3RXEOIERPRX3KBSZ4KC47VPJFVOYZHB5AOKJWV3SPWEE7F7YA"
+private = "XXeEorfCRbDNVsa7g23CEjSmwoN3NFlAO+6xxtSzrvI3+yt8zi7jcjkEi+N9qDLPFC5+r0lq7GTh6Byk2ruT7A=="
 
 
 def generate_algorand_keypair():
@@ -31,11 +32,11 @@ def check_balance(address):
     The balance returned might be in Test or Main net depending on which network the
     algod_client is connected to
     '''
-    algod_client = client.get_algod_client()
+    algod_client = Client.get_algod_client()
     account_info = algod_client.account_info(address)
     micro_algos = account_info.get('amount')
-    # print("Account balance: {} microAlgos".format(
-    #     account_info.get('amount')) + "\n")
+    print("Account balance: {} microAlgos".format(
+        account_info.get('amount')) + "\n")
     return micro_algos
 
 
@@ -46,7 +47,7 @@ def check_assets(address):
     algod_client is connected to
     NFT object is of form: {'amount': 1, 'asset-id': 84222697, 'is-frozen': False}
     '''
-    algod_client = client.get_algod_client()
+    algod_client = Client.get_algod_client()
     account_info = algod_client.account_info(address)
     asset_list = account_info['assets']
     return asset_list

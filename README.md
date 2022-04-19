@@ -46,16 +46,19 @@ If you make any changes to the files and install some dependencies, list them ou
 #### Utility Routes
 
 Helper routes to be used to show warnings during signup
-`GET /api/username` returns a list of all usernames in db
-`GET /api/email` returns a list of all emails in db
+`GET /api/username` returns a JSON object with list of all usernames in db
+`GET /api/email` returns a JSON object with list of all emails in db
 
 #### User Routes
 
 `GET /api/user` lists all users \
 `POST /api/user` adds new user to the db \
 `GET /api/user/<email_id>` returns the user with `<email_id>` \
-`PUT /api/user/<email_id>` modifies the user with `<email_id>`
+`PUT /api/user/<email_id>` modifies the user with `<email_id>` \
 `DELETE /api/user/<email_id>` deletes the user with `<email_id>`
+
+`GET /api/user/balance/<email_id>` returns the balance of user in micro ALGOs \
+`GET /api/user/nft/<email_id>` returns the list of all nfts owned by the user
 
 #### Other Routes
 

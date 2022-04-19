@@ -1,6 +1,6 @@
 from algosdk.future.transaction import *
 import client
-from AlgorandAccount import *
+from algoaccount import *
 from utilities import *
 
 

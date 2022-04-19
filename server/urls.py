@@ -3,8 +3,10 @@ from django.urls import path
 from server import views
 
 urlpatterns = [
-    path("user/", views.user),
+    path(r"user/", views.user),
     path(r"user/<str:email_id>/", views.user_with_id),
+    path(r"user/balance/<str:email_id>/", views.user_balance),
+    path(r"user/nft/<str:email_id>/", views.nft_owned),
 
     path("event/", views.event_list),
     path(r"event/<str:event_id>/", views.event),

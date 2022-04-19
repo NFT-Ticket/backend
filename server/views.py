@@ -1,10 +1,13 @@
 from urllib import response
 from server.models import *
 from rest_framework.response import Response
+from rest_framework.parsers import JSONParser
+from rest_framework.decorators import parser_classes
 from rest_framework.decorators import api_view
 from rest_framework import status
 from server.serializer import *
 from django.http import JsonResponse
+from algorand import account
 
 
 @api_view(["GET", "POST"])
@@ -15,6 +18,7 @@ def user(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'POST':
         data = request.data
+        print(data)
         serializer = UserSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -41,6 +45,40 @@ def user_with_id(request, email_id):
     elif request.method == "DELETE":
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(["GET"])
+@parser_classes([JSONParser])
+def nft_owned(request, email_id):
+    try:
+        user = User.objects.get(pk=email_id)
+        serializer = UserSerializer(user)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    wallet_addr = serializer.data['wallet_addr']
+    try:
+        nfts_owned = account.check_assets(wallet_addr)
+        return Response({'NFTs owned': nfts_owned}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@parser_classes([JSONParser])
+def user_balance(request, email_id):
+    try:
+        user = User.objects.get(pk=email_id)
+        serializer = UserSerializer(user)
+    except User.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    wallet_addr = serializer.data['wallet_addr']
+    try:
+        micro_algos = account.check_balance(wallet_addr)
+        return Response({'Micro ALGOs': micro_algos}, status=status.HTTP_200_OK)
+    except Exception:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @ api_view(["GET"])
@@ -123,14 +161,16 @@ def event_ticket(request, event_id):
 
 
 @ api_view(["GET"])
+@parser_classes([JSONParser])
 def get_emails(request):
     emails = User.objects.values('email')
     emails = [email["email"] for email in emails]
-    return JsonResponse(emails, safe=False)
+    return Response({"emails": emails}, status=status.HTTP_200_OK)
 
 
 @ api_view(["GET"])
+@parser_classes([JSONParser])
 def get_usernames(request):
     usernames = User.objects.values('username')
     usernames = [username["username"] for username in usernames]
-    return JsonResponse(usernames, safe=False)
+    return Response({"usernames": usernames}, status=status.HTTP_200_OK)
