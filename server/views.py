@@ -9,6 +9,11 @@ from rest_framework import status
 from server.serializer import *
 from datetime import datetime
 from algorand import account, nft
+from django.views.generic import TemplateView  # Import TemplateView
+
+
+class HomePageView(TemplateView):
+    template_name = "index.html"
 
 
 @api_view(["GET", "POST"])
