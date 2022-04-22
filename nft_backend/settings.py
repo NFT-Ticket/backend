@@ -16,8 +16,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -26,9 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("secretKey")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+DEBUG = False
 # Application definition
 
 INSTALLED_APPS = [
@@ -48,7 +46,7 @@ INSTALLED_APPS = [
 CORS_ORIGIN_ALLOW_ALL = True
 
 ALLOWED_HOSTS = ["nfticket.com", "localhost",
-                 "127.0.0.1", "fe4b-130-245-192-3.ngrok.io"]
+                 "127.0.0.1", "fe4b-130-245-192-3.ngrok.io", "nfticket-backend.herokuapp.com"]
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -85,20 +83,29 @@ WSGI_APPLICATION = "nft_backend.wsgi.application"
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 # TODO: Change the respective fields to some host provider once we are ready to deploy
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.mysql",
+#         "NAME": os.getenv("db"),
+#         "USER": os.getenv("dbUser"),
+#         "PASSWORD": os.getenv("dbPass"),
+#         "HOST": os.getenv("dbHost"),
+#         "PORT": "3306",
+#         "OPTIONS": {
+#             "ssl": {"ca": "./static/ssl/server-ca.pem", "cert": "./static/ssl/client-cert.pem", "key": "./static/ssl/client-key.pem"}
+#         },
+#     }
+# }
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": os.getenv("db"),
-        "USER": os.getenv("dbUser"),
-        "PASSWORD": os.getenv("dbPass"),
-        "HOST": os.getenv("dbHost"),
-        "PORT": "3306",
-        "OPTIONS": {
-            "ssl": {"ca": "./ssl/server-ca.pem", "cert": "./ssl/client-cert.pem", "key": "./ssl/client-key.pem"}
-        },
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv("db"),
+        'USER': os.getenv("dbUser"),
+        'PASSWORD': os.getenv("dbPass"),
+        'HOST': os.getenv("dbHost"),
+        'PORT': '3306',
     }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
