@@ -8,12 +8,6 @@ class UserSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-# class EventGeoSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model=EventGeo
-#         fields=('__all__')
-
-
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event

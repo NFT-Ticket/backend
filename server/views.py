@@ -1,4 +1,5 @@
 from urllib import response
+from algorand.algorandaccount import AlgorandAccount
 from server.models import *
 from rest_framework.response import Response
 from rest_framework.parsers import JSONParser
@@ -6,8 +7,8 @@ from rest_framework.decorators import parser_classes
 from rest_framework.decorators import api_view
 from rest_framework import status
 from server.serializer import *
-from django.http import JsonResponse
-from algorand import account
+from datetime import datetime
+from algorand import account, nft
 
 
 @api_view(["GET", "POST"])
@@ -42,7 +43,7 @@ def user_with_id(request, email_id):
         serializer = UserSerializer(user, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == "DELETE":
@@ -63,8 +64,8 @@ def nft_owned(request, email_id):
     try:
         nfts_owned = account.check_assets(wallet_addr)
         return Response({'NFTs owned': nfts_owned}, status=status.HTTP_200_OK)
-    except Exception:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({"Server Exception": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(["GET"])
@@ -80,57 +81,73 @@ def user_balance(request, email_id):
     try:
         micro_algos = account.check_balance(wallet_addr)
         return Response({'Micro ALGOs': micro_algos}, status=status.HTTP_200_OK)
-    except Exception:
+    except Exception as e:
+        return Response({"Server Exception": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@ api_view(["GET", "POST"])
+def event(request):
+    if request.method == 'GET':
+        print("\n\nInside get method\n")
+        today = datetime.today()
+        events = Event.objects.filter(
+            date__gte=today, time__gte=today)  # Only unexpired events
+        print(events)
+        print("\n\n\n\n")
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    elif request.method == 'POST':
+        # Extract user_name, find wallet and create NFT
+        try:
+            user_email = request.data["vendor"]
+            user = User.objects.get(email__exact=user_email)
+            creator = AlgorandAccount(user.private_key)
+            event_title = request.data["title"]
+            nft_name = event_title[:32]
+            unit_name = event_title[:8]
+            amt = request.data["ticket_quantity"]
+            nft_id = nft.create_nft(nft_name, unit_name, amt, creator)
+        except Exception as e:
+            return Response({"Server Exception": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        serializer = EventSerializer(data=request.data)
+        if serializer.is_valid():
+            # Try to create NFT
+            try:
+                user_email = request.data["vendor"]
+                user = User.objects.get(email__exact=user_email)
+                creator = AlgorandAccount(user.private_key)
+                event_title = request.data["title"]
+                nft_name = event_title[:32]
+                unit_name = event_title[:8]
+                amt = request.data["ticket_quantity"]
+                nft_id = nft.create_nft(nft_name, unit_name, amt, creator)
+            # If NFT creation fails, don't save event data and return server error
+            except Exception as e:
+                return Response({"Server Exception": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            # If no exception occurs and NFT is created, save nft_id to db along with event details
+            serializer.save(tickets_remaining=amt, ticket_nft_id=nft_id)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@ api_view(["GET"])
-def event_list(request):
-    events = Event.objects.all()
-    serializer = EventSerializer(events, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-@ api_view(["POST"])
-def register_event(request):
-    data = request.data
-    Event.objects.create(age_restriction=data['age_restriction'], tickets_remaining=data['tickets_remaining'], vendor_id=data['vendor_id'],
-                         name=data['name'], description=data['description'], location_name=data[
-                             'location_name'], address=data['address'], city=data['city'],
-                         state=data['state'], date=data['date'], time=data['time'])
-    return Response(status=status.HTTP_200_OK)
-
-
-@ api_view(["GET"])
-def event(request, event_id):
+@ api_view(["GET", "PUT"])
+def event_with_id(request, event_id):
     try:
         event = Event.objects.get(pk=event_id)
         serializer = EventSerializer(event)
-        return Response(serializer.data)
     except Event.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-@ api_view(["POST"])
-def modify_event(request, event_id):
-    try:
-        data = request.data
-        event = Event(id=event_id)
-        event.age_restriction = data['age_restriction']
-        event.tickets_remaining = data['tickets_remaining']
-        event.name = data['name']
-        event.description = data['description']
-        event.location_name = data['location_name']
-        event.address = data['address']
-        event.city = data['city']
-        event.state = data['state']
-        event.date = data['date']
-        event.time = data['time']
-        event.vendor_id = data['vendor_id']
-        event.save()
-        return Response(status=status.HTTP_200_OK)
-    except Event.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    if request.method == "GET":
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    elif request.method == "PUT":
+        serializer = EventSerializer(event, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @ api_view(["GET"])

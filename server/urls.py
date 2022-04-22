@@ -8,10 +8,8 @@ urlpatterns = [
     path(r"user/balance/<str:email_id>/", views.user_balance),
     path(r"user/nft/<str:email_id>/", views.nft_owned),
 
-    path("event/", views.event_list),
-    path(r"event/<str:event_id>/", views.event),
-    path("register_event/", views.register_event),
-    path(r"modify_event/<str:event_id>/", views.modify_event),
+    path("event/", views.event),
+    path(r"event/<str:event_id>/", views.event_with_id),
 
     path(r"user_ticket/<str:user_id>/", views.user_ticket),
     path(r"ticket/<str:ticket_id>/", views.ticket),

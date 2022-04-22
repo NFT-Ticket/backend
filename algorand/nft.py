@@ -1,19 +1,22 @@
 from algosdk.future.transaction import *
 from .client import Client
-from .algoaccount import AlgorandAccount
+from .algorandaccount import AlgorandAccount
 from . import utilities
 import json
 
 
 # Unit name should be 8 char or less
 
-def create_nft(nft_name, unit_name, amt, creator, manager, url):
+def create_nft(nft_name, unit_name, amt, creator):
     algod_client = Client.get_algod_client()
 
     # Get network params for transactions before every transaction.
     params = algod_client.suggested_params()
 
     # Create NFT Transaction
+    manager = creator
+    # This should be IPFS Meta data URL
+    url = "https://nfticket-backend.herokuapp.com/"
     txn = AssetConfigTxn(
         sender=creator.public_key,
         sp=params,
@@ -69,7 +72,7 @@ def create_nft(nft_name, unit_name, amt, creator, manager, url):
     return asset_id
 
 
-def opt_in_to_nft(sender, receiver, asset_id):
+def opt_in_to_nft(receiver, asset_id):
     '''
     For a NFT to transfer from A to B, 
     B must opt in to receive the NFT

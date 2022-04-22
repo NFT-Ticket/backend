@@ -1,5 +1,5 @@
 from algosdk import account, mnemonic
-from . import algoaccount
+from . import algorandaccount
 from .client import Client
 
 # Just a random account for testing purposes
@@ -23,7 +23,7 @@ def generate_algorand_keypair():
     print("My address: {}".format(address))
     print("My private key: {}".format(private_key))
     print("My passphrase: {}".format(acc_mnemonic))
-    return algoaccount.AlgorandAccount(private_key)
+    return algorandaccount.AlgorandAccount(private_key)
 
 
 def check_balance(address):

@@ -2,6 +2,8 @@ from algosdk.v2client import algod
 import os
 from dotenv import load_dotenv
 
+# Singleton class
+
 
 class Client:
     _instance = None  # private global variable
@@ -25,6 +27,7 @@ class Client:
                 algod_token, algod_address, headers)
             Client._instance = algod_client
 
+    @staticmethod
     def get_algod_client():
         '''
             Returns the algod client using singleton pattern

@@ -16,47 +16,40 @@ class User(models.Model):
         return f"name: {self.first_name + ' ' + self.last_name} username: {self.username} email: {self.email}"
 
 
-# class EventGeo(models.Model):
-#     name = models.CharField(max_length=60, blank=False)
-#     location_name = models.CharField(max_length=60, blank=False)
-#     address = models.CharField(max_length=60, blank=False)
-#     city = models.CharField(max_length=60)
-#     state = models.CharField(max_length=60)
-#     dateTime = models.DateField(blank=False)
-#     lat_long = models.IntegerField(blank=False)  # TODO: Prolly best used with google maps integration
-
-
-class URL(models.Model):
-    link = models.URLField()
-
-    class Meta:
-        abstract = True
-
-
 class Event(models.Model):
     # If user deleted, delete all associated events
+    # foreign_key = pk of User creating event
     vendor = models.ForeignKey(User, on_delete=models.CASCADE)
-    # geo = models.EmbeddedField(EventGeo, blank=False)
-    age_restriction = models.BooleanField(blank=False)
-    # images = models.ListField(model_container=URL, default=list)
-    tickets_remaining = models.IntegerField()
-    name = models.CharField(max_length=60, default='')
-    description = models.CharField(max_length=256, default='')
-    location_name = models.CharField(max_length=60, default='')
-    address = models.CharField(max_length=60, default='')
-    city = models.CharField(max_length=30, default='')
-    state = models.CharField(max_length=30, default='')
-    date = models.DateField(default='2000-01-01')
-    time = models.TimeField(default='00:00:00')
+    ticket_quantity = models.PositiveIntegerField(null=False, blank=False)
+    tickets_remaining = models.PositiveIntegerField(blank=True)
+    # NFT asset id associated with Event ticket
+    # Remember that each event will be associated with one NFT id
+    # Storing nft_id here minimizes data redundancy in Tickets table
+    ticket_nft_id = models.CharField(max_length=60, blank=True)
+    title = models.CharField(
+        max_length=64, default='EVENT TITLE', null=False, blank=False)
+    description = models.TextField(
+        default='EVENT DESCRIPTION', null=False, blank=False)
+    # JSON stored as textfield
+    images = models.JSONField(default=dict, null=False, blank=False)
+    street_address = models.CharField(
+        max_length=60, null=False, blank=False, default="300 Circle Rd")
+    city = models.CharField(max_length=32, null=False,
+                            blank=False, default="Stony Brook")
+    zipcode = models.CharField(
+        max_length=5, null=False, blank=False, default="11790")
+    state = models.CharField(max_length=30, null=False,
+                             blank=False, default="New York")
+    date = models.DateField(null=False, blank=False, default="2022-05-20")
+    time = models.TimeField(null=False, blank=False, default="00:00:00")
 
 
 class Ticket(models.Model):
-    # TODO: Determine if the primary key is a combination (hash, id) or just (hash)
-    # TODO: Whatever the NFT hash is
-    event = models.ForeignKey(Event, on_delete=models.CASCADE, default=1)
-    hash = models.CharField(max_length=60, blank=False)
-    seat = models.CharField(max_length=60)
-    # TODO: Consider a LazyReferenceField
+    # IF event is deleted, delete all associated tickets
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    # NFT asset id associated with ticket
+    nft_id = models.CharField(max_length=60, null=False, blank=False)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    price = models.IntegerField(blank=False)
-    sale = models.BooleanField(blank=False)
+    is_expired = models.BooleanField(null=False, blank=False)
+    on_sale = models.BooleanField(null=False, blank=False)
+    price = models.IntegerField(null=False, blank=False)
