@@ -97,7 +97,8 @@ def event(request):
         print("\n\nInside get method\n")
         today = datetime.today()
         events = Event.objects.filter(
-            date__gte=today, time__gte=today)  # Only unexpired events
+            date__gte=today)  # Only events in the future
+        # events = Event.objects.all()
         print(events)
         print("\n\n\n\n")
         serializer = EventSerializer(events, many=True)
@@ -167,13 +168,14 @@ def user_ticket(request, user_id):
 
 
 @ api_view(["GET"])
+@parser_classes([JSONParser])
 def ticket(response, ticket_id):
     try:
         ticket = Ticket.objects.get(pk=ticket_id)
         serializer = TicketSerializer(ticket)
         return Response(serializer.data)
     except Ticket.DoesNotExist:
-        return Response(status=status.HTPP_404_NOT_FOUND)
+        return Response({"error": "Ticket doesn't exist"}, status=status.HTPP_404_NOT_FOUND)
 
 
 @ api_view(["GET"])
