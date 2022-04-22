@@ -169,17 +169,6 @@ def user_ticket(request, user_id):
 
 
 @ api_view(["GET"])
-@parser_classes([JSONParser])
-def ticket(response, ticket_id):
-    try:
-        ticket = Ticket.objects.get(pk=ticket_id)
-        serializer = TicketSerializer(ticket)
-        return Response(serializer.data)
-    except Ticket.DoesNotExist:
-        return Response({"error": "Ticket doesn't exist"}, status=status.HTPP_404_NOT_FOUND)
-
-
-@ api_view(["GET"])
 def event_ticket(request, event_id):
     try:
         tickets = Ticket.objects.filter(event_id=event_id)
@@ -248,3 +237,21 @@ def ticket_purchase(request):
             return Response({"error": "Atomic Transfer failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@ api_view(["GET", "PUT"])
+@parser_classes([JSONParser])
+def ticket(request, ticket_id):
+    try:
+        ticket = Ticket.objects.get(pk=ticket_id)
+        serializer = TicketSerializer(ticket)
+    except Ticket.DoesNotExist:
+        return Response({"error": "Ticket doesn't exist"}, status=status.HTPP_404_NOT_FOUND)
+    if request.method == "GET":
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    elif request.method == "PUT":
+        serializer = TicketSerializer(ticket, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
