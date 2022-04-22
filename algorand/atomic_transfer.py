@@ -3,7 +3,7 @@ from algosdk.future.transaction import *
 import nft
 
 
-def group_transactions(algo_transfer_txn, asset_transfer_txn, algo_sender, nft_sender):
+def transfer_atomically(algo_transfer_txn, asset_transfer_txn, algo_sender, nft_sender):
     '''
     Takes two transactions, one of type ALGO transfer, other of type NFT transfer,
     groups the transactions as a batch and tries to atomically perform both transactions

@@ -8,7 +8,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 from server.serializer import *
 from datetime import datetime
-from algorand import account, nft
+from algorand import account, nft, atomic_transfer
 from django.views.generic import TemplateView  # Import TemplateView
 
 
@@ -157,6 +157,7 @@ def event_with_id(request, event_id):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# ------------------- Untested Code start ----------------------------
 @ api_view(["GET"])
 def user_ticket(request, user_id):
     try:
@@ -187,6 +188,8 @@ def event_ticket(request, event_id):
     except Ticket.DoesNotExist:
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+# ------------------- Untested Code End ----------------------------
+
 
 @ api_view(["GET"])
 @parser_classes([JSONParser])
@@ -202,3 +205,46 @@ def get_usernames(request):
     usernames = User.objects.values('username')
     usernames = [username["username"] for username in usernames]
     return Response({"usernames": usernames}, status=status.HTTP_200_OK)
+
+
+@api_view(["POST"])
+@parser_classes([JSONParser])
+def ticket_purchase(request):
+    try:
+        event_id = request.data["event_id"]
+        buyer_email = request.data["buyer"]
+        event = Event.objects.get(pk=event_id)
+        # Check if ticket is available or not
+        if event.tickets_remaining == 0:
+            raise Exception(
+                f"No tickets remaining for event with id {event_id}")
+        seller_email = event.vendor
+        seller = User.objects.get(pk=seller_email)
+        buyer = User.objects.get(pk=buyer_email)
+        ticket_price = event.event_price
+        nft_id = event.ticket_nft_id
+        # Create Algorand accounts from user objects
+        buyer = AlgorandAccount(buyer.private_key)
+        seller = AlgorandAccount(seller.private_key)
+        # Creating unsigned algo transfer txn
+        algo_transfer_txn = atomic_transfer.create_algo_transfer_txn(
+            buyer, seller, ticket_price)
+        # Creating unsigned NFT transfer txn
+        asset_transfer_txn = atomic_transfer.create_asset_transfer_txn(
+            seller, buyer, nft_id)
+        # Try atomic transfer
+        if atomic_transfer.transfer_atomically(algo_transfer_txn, asset_transfer_txn, buyer, seller):
+            # Create the ticket to save to the buyer's account
+            new_ticket = {"event": event_id,
+                          "nft_id": nft_id, "owner": buyer_email,
+                          "is_expired": False, "on_sale": False, "price": ticket_price}
+            serializer = TicketSerializer(user, data=new_ticket)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            # Atomic transfer failed, return server error
+            return Response({"error": "Atomic Transfer failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

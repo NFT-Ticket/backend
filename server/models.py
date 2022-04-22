@@ -22,6 +22,7 @@ class Event(models.Model):
     vendor = models.ForeignKey(User, on_delete=models.CASCADE)
     ticket_quantity = models.PositiveIntegerField(null=False, blank=False)
     tickets_remaining = models.PositiveIntegerField(blank=True)
+    event_price = models.PositiveIntegerField(null=False, blank=False)
     # NFT asset id associated with Event ticket
     # Remember that each event will be associated with one NFT id
     # Storing nft_id here minimizes data redundancy in Tickets table
