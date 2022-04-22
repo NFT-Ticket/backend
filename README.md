@@ -66,6 +66,13 @@ Helper routes to be used to show warnings during signup
 `GET /api/user/balance/<email_id>/` returns the balance of user in micro ALGOs \
 `GET /api/user/nft/<email_id>/` returns the list of all nfts owned by the user
 
+#### Event Routes
+
+`GET /api/event/` lists all events in the future. This will omit all past events \
+`POST /api/event/` adds new new event to the db. Params required: `vendor<email>, ticket_quantity<int>, title<str>, description<str>, images:List[str], street_address<str>, city<str>, zipcode<int>, date, time`\
+`GET /api/event/<event_id>/` returns the event with `<event_id>` \
+`PUT /api/event/<event_id>/` modifies the event with `<event_id>` \
+
 #### Other Routes
 
 Not fully tested yet. check `server/views.py` and `server/urls.py`
