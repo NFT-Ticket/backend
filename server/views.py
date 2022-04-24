@@ -93,7 +93,7 @@ def user_balance(request, email_id):
 
 
 @ api_view(["GET", "POST"])
-async def event(request):
+def event(request):
     print(f"\n\nGot a request of type {request.method}\n\n")
     if request.method == 'GET':
         today = datetime.today()
