@@ -74,6 +74,11 @@ Helper routes to be used to show warnings during signup
 `GET /api/event/<event_id>/` returns the event with `<event_id>` \
 `PUT /api/event/<event_id>/` modifies the event with `<event_id>` \
 
+#### Ticket Routes
+
+`GET /api/ticket/<ticket_id>/` returns the ticket owned by user after purchase.
+`POST /api/ticket/` with params: `event_id` and `buyer<email_id>` as body makes an atomic transaction where ALGOS are transferred to the seller and NFT is transferred to the user atomically. If either of the transactions fail, the whole transaction fails. If the transactions are successful, a ticket is issued for the buyer.
+
 #### Other Routes
 
 Not fully tested yet. check `server/views.py` and `server/urls.py`
