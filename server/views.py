@@ -108,18 +108,17 @@ def event(request):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # Extract user_name, find wallet and create NFT
-        try:
-            user_email = request.data["vendor"]
-            user = User.objects.get(email__exact=user_email)
-            creator = AlgorandAccount(user.private_key)
-            event_title = request.data["title"]
-            nft_name = event_title[:32]
-            unit_name = event_title[:8]
-            amt = request.data["ticket_quantity"]
-            nft_id = nft.create_nft(nft_name, unit_name, amt, creator)
-        except Exception as e:
-            return Response({"Server Exception": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # # Extract user_name, find wallet and create NFT
+        # try:
+        #     user_email = request.data["vendor"]
+        #     user = User.objects.get(email__exact=user_email)
+        #     creator = AlgorandAccount(user.private_key)
+        #     event_title = request.data["title"]
+        #     nft_name = event_title[:32]
+        #     unit_name = event_title[:8]
+        #     amt = request.data["ticket_quantity"]
+        # except Exception as e:
+        #     return Response({"Server Exception": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         if serializer.is_valid():
             # Try to create NFT
