@@ -17,6 +17,9 @@ class AlgorandAccount:
     def getMnemonic(self) -> str:
         return mnemonic.from_private_key(self.secret_key)
 
+    def __str__(self) -> str:
+        return self.public_key
+
     @classmethod
     def FromMnemonic(cls, m: str) -> "AlgorandAccount":
         return cls(mnemonic.to_private_key(m))

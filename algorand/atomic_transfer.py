@@ -68,7 +68,8 @@ def create_algo_transfer_txn(sender, receiver, micro_algos):
     params = algod_client.suggested_params()
     # create transactions
     print("Creating transactions...")
-    algo_transfer_txn = PaymentTxn(sender, params, receiver, micro_algos)
+    algo_transfer_txn = PaymentTxn(
+        sender.public_key, params, receiver.public_key, micro_algos)
     print("...txn_1: from {} to {} for {} microAlgos".format(
         sender, receiver, micro_algos))
     print("...created txn_1: ", algo_transfer_txn.get_txid())

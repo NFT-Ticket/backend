@@ -94,7 +94,6 @@ def user_balance(request, email_id):
 
 @ api_view(["GET", "POST"])
 def event(request):
-    print(f"\n\nGot a request of type {request.method}\n\n")
     if request.method == 'GET':
         today = datetime.today()
         events = Event.objects.filter(
@@ -105,27 +104,15 @@ def event(request):
     elif request.method == 'POST':
         # Before trying to create NFT, ensure the request has valid params
         serializer = EventSerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        # # Extract user_name, find wallet and create NFT
-        # try:
-        #     user_email = request.data["vendor"]
-        #     user = User.objects.get(email__exact=user_email)
-        #     creator = AlgorandAccount(user.private_key)
-        #     event_title = request.data["title"]
-        #     nft_name = event_title[:32]
-        #     unit_name = event_title[:8]
-        #     amt = request.data["ticket_quantity"]
-        # except Exception as e:
-        #     return Response({"Server Exception": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
         if serializer.is_valid():
             # Try to create NFT
             try:
                 user_email = request.data["vendor"]
                 user = User.objects.get(email__exact=user_email)
                 creator = AlgorandAccount(user.private_key)
+                # Check if the minimum balance is met: 1000 Micro algos
+                if account.check_balance(creator.public_key) < 1000:
+                    return Response({"error": "Insufficient user balance. Use https://bank.testnet.algorand.network/ to reload your account"}, status=status.HTTP_400_BAD_REQUEST)
                 event_title = request.data["title"]
                 nft_name = event_title[:32]
                 unit_name = event_title[:8]
@@ -137,6 +124,7 @@ def event(request):
             # If no exception occurs and NFT is created, save nft_id to db along with event details
             serializer.save(tickets_remaining=amt, ticket_nft_id=nft_id)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @ api_view(["GET", "PUT"])
@@ -207,12 +195,14 @@ def ticket(request):
         if event.tickets_remaining == 0:
             raise Exception(
                 f"No tickets remaining for event with id {event_id}")
-        seller_email = event.vendor
-        seller = User.objects.get(pk=seller_email)
+        seller = event.vendor
         buyer = User.objects.get(pk=buyer_email)
         ticket_price = event.event_price
+        # Check if buyer has enough balance in their account
+        if account.check_balance(buyer.wallet_addr) < ticket_price:
+            return Response({"error": "Insufficient user balance. Use https://bank.testnet.algorand.network/ to reload your account"}, status=status.HTTP_400_BAD_REQUEST)
         nft_id = event.ticket_nft_id
-        # Create Algorand accounts from user objects
+        # Create Algorand account objects from user objects
         buyer = AlgorandAccount(buyer.private_key)
         seller = AlgorandAccount(seller.private_key)
         # Creating unsigned algo transfer txn
@@ -223,24 +213,28 @@ def ticket(request):
             seller, buyer, nft_id)
         # Try atomic transfer
         if atomic_transfer.transfer_atomically(algo_transfer_txn, asset_transfer_txn, buyer, seller):
+            print("Atomic transfer was successful.....Now creating a ticket for the user")
             # Create the ticket to save to the buyer's account
             new_ticket = {"event": event_id,
                           "nft_id": nft_id, "owner": buyer_email,
                           "is_expired": False, "on_sale": False, "price": ticket_price}
-            serializer = TicketSerializer(user, data=new_ticket)
+            serializer = TicketSerializer(data=new_ticket)
             if serializer.is_valid():
                 serializer.save()
+                event.tickets_remaining = event.tickets_remaining - 1
+                event.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             # Atomic transfer failed, return server error
             return Response({"error": "Atomic Transfer failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
+        print(e)
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @ api_view(["GET", "PUT"])
-@parser_classes([JSONParser])
+@ parser_classes([JSONParser])
 def ticket_with_id(request, ticket_id):
     try:
         ticket = Ticket.objects.get(pk=ticket_id)
@@ -260,7 +254,7 @@ def ticket_with_id(request, ticket_id):
 
 
 @ api_view(["GET"])
-@parser_classes([JSONParser])
+@ parser_classes([JSONParser])
 def ticket_with_user_id(request, email_id):
     try:
         tickets = Ticket.objects.filter(owner=email_id)
