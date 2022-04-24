@@ -10,6 +10,7 @@ from server.serializer import *
 from datetime import datetime
 from algorand import account, nft, atomic_transfer
 from django.views.generic import TemplateView  # Import TemplateView
+from asgiref.sync import sync_to_async
 
 
 class HomePageView(TemplateView):
@@ -92,19 +93,21 @@ def user_balance(request, email_id):
 
 
 @ api_view(["GET", "POST"])
-def event(request):
+async def event(request):
+    print(f"\n\nGot a request of type {request.method}\n\n")
     if request.method == 'GET':
-        print("\n\nInside get method\n")
         today = datetime.today()
         events = Event.objects.filter(
             date__gte=today)  # Only events in the future
-        # events = Event.objects.all()
-        print(events)
-        print("\n\n\n\n")
         serializer = EventSerializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     elif request.method == 'POST':
+        # Before trying to create NFT, ensure the request has valid params
+        serializer = EventSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         # Extract user_name, find wallet and create NFT
         try:
             user_email = request.data["vendor"]
@@ -118,7 +121,6 @@ def event(request):
         except Exception as e:
             return Response({"Server Exception": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        serializer = EventSerializer(data=request.data)
         if serializer.is_valid():
             # Try to create NFT
             try:
@@ -136,7 +138,6 @@ def event(request):
             # If no exception occurs and NFT is created, save nft_id to db along with event details
             serializer.save(tickets_remaining=amt, ticket_nft_id=nft_id)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @ api_view(["GET", "PUT"])
@@ -145,7 +146,7 @@ def event_with_id(request, event_id):
         event = Event.objects.get(pk=event_id)
         serializer = EventSerializer(event)
     except Event.DoesNotExist:
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == "GET":
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -198,7 +199,7 @@ def get_usernames(request):
 
 @api_view(["POST"])
 @parser_classes([JSONParser])
-def ticket_purchase(request):
+def ticket(request):
     try:
         event_id = request.data["event_id"]
         buyer_email = request.data["buyer"]
@@ -241,17 +242,30 @@ def ticket_purchase(request):
 
 @ api_view(["GET", "PUT"])
 @parser_classes([JSONParser])
-def ticket(request, ticket_id):
+def ticket_with_id(request, ticket_id):
     try:
         ticket = Ticket.objects.get(pk=ticket_id)
         serializer = TicketSerializer(ticket)
     except Ticket.DoesNotExist:
-        return Response({"error": "Ticket doesn't exist"}, status=status.HTPP_404_NOT_FOUND)
+        return Response({"error": "Ticket doesn't exist"}, status=status.HTTP_404_NOT_FOUND)
+
     if request.method == "GET":
         return Response(serializer.data, status=status.HTTP_200_OK)
+
     elif request.method == "PUT":
         serializer = TicketSerializer(ticket, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@ api_view(["GET"])
+@parser_classes([JSONParser])
+def ticket_with_user_id(request, email_id):
+    try:
+        tickets = Ticket.objects.filter(owner=email_id)
+        serializer = TicketSerializer(tickets, many=True)
+    except Ticket.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    return Response(serializer.data, status=status.HTTP_200_OK)

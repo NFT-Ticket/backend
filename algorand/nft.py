@@ -8,6 +8,7 @@ import json
 # Unit name should be 8 char or less
 
 def create_nft(nft_name, unit_name, amt, creator):
+    print("\n\n\nCalling create nft function\n\n\n")
     algod_client = Client.get_algod_client()
 
     # Get network params for transactions before every transaction.

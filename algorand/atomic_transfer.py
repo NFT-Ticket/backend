@@ -1,6 +1,6 @@
 from .client import Client
 from algosdk.future.transaction import *
-import nft
+from .nft import *
 
 
 def transfer_atomically(algo_transfer_txn, asset_transfer_txn, algo_sender, nft_sender):
@@ -83,7 +83,7 @@ def create_asset_transfer_txn(sender, receiver, asset_id):
     '''
     # Receiver has to first opt into the NFT before receiving nft
     print(f"Opting into nft with id: {asset_id}")
-    nft.opt_in_to_nft(receiver, asset_id)
+    opt_in_to_nft(receiver, asset_id)
 
     # Create asset transfer txn
     algod_client = Client.get_algod_client()

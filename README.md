@@ -14,7 +14,7 @@ Look at the tree below to understand where to put `.env` file and `ssl` folder
 ├── requirements.txt  \
 ├── ssl/ \
 ├── venv/ \
-└── .env 
+└── .env
 
 <!-- prettier-ignore-end -->
 
@@ -61,8 +61,9 @@ Helper routes to be used to show warnings during signup
 `POST /api/user/` adds new user to the db \
 `GET /api/user/<email_id>/` returns the user with `<email_id>` \
 `PUT /api/user/<email_id>/` modifies the user with `<email_id>` \
-`DELETE /api/user/<email_id>/` deletes the user with `<email_id>`
+`DELETE /api/user/<email_id>/` deletes the user with `<email_id>` \
 
+`GET /api/user/ticket/<email_id>/` returns the list of tickets owned by the user \
 `GET /api/user/balance/<email_id>/` returns the balance of user in micro ALGOs \
 `GET /api/user/nft/<email_id>/` returns the list of all nfts owned by the user
 

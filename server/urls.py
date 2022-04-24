@@ -7,13 +7,13 @@ urlpatterns = [
     path(r"user/<str:email_id>/", views.user_with_id),
     path(r"user/balance/<str:email_id>/", views.user_balance),
     path(r"user/nft/<str:email_id>/", views.nft_owned),
+    path(r"user/ticket/<str:email_id>/", views.ticket_with_user_id),
 
     path("event/", views.event),
     path(r"event/<str:event_id>/", views.event_with_id),
 
-    path(r"user_ticket/<str:user_id>/", views.user_ticket),
-    path(r"ticket/<str:ticket_id>/", views.ticket),
-    path(r"event_ticket/<str:event_id>/", views.event_ticket),
+    path(r"ticket/", views.ticket),
+    path(r"ticket/<str:ticket_id>/", views.ticket_with_id),
 
     path(r"email/", views.get_emails),
     path(r"username/", views.get_usernames),
