@@ -76,8 +76,10 @@ Helper routes to be used to show warnings during signup
 
 #### Ticket Routes
 
-`GET /api/ticket/<ticket_id>/` returns the ticket owned by user after purchase.
-`POST /api/ticket/` with params: `event_id` and `buyer<email_id>` as body makes an atomic transaction where ALGOS are transferred to the seller and NFT is transferred to the user atomically. If either of the transactions fail, the whole transaction fails. If the transactions are successful, a ticket is issued for the buyer.
+`GET /api/ticket/<ticket_id>/` returns the ticket owned by user after purchase. \
+`POST /api/ticket/` with params: `event_id` and `buyer<email_id>` as body makes an atomic transaction where ALGOS are transferred to the seller and NFT is transferred to the user atomically. If either of the transactions fail, the whole transaction fails. If the transactions are successful, a ticket is issued for the buyer. \
+`PUT /api/ticket/<ticket_id>/` with modified ticket as the body changes the ticket object in the db. Use this when a user wants to sell their ticket and adjust price to the ticket for sale. \
+`PATCH /api/ticket/<ticket_id>/` with params: `buyer<email_id>` as body makes an atomic transaction where ALGOS are transferred to the owner of `<ticket_id>` and NFT is transferred to `buyer<email_id>`. If the atomic transfer is successful, the Ticket database is changed where the owner is changed from seller to new buyer and the `on_sale` property is set to False.
 
 #### Other Routes
 

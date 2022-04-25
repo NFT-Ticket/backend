@@ -233,7 +233,7 @@ def ticket(request):
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-@ api_view(["GET", "PUT"])
+@ api_view(["GET", "PUT", "PATCH"])
 @ parser_classes([JSONParser])
 def ticket_with_id(request, ticket_id):
     try:
@@ -251,6 +251,44 @@ def ticket_with_id(request, ticket_id):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    elif request.method == "PATCH":
+        try:
+            if not ticket.on_sale:
+                raise Exception(
+                    "Ticket not on sale by the owner, cannot make a purchase")
+            buyer_email = request.data["buyer"]
+            ticket_price = ticket.price
+            nft_id = ticket.nft_id
+            buyer_obj = User.objects.get(pk=buyer_email)
+            seller_obj = ticket.owner
+            # Create Algorand account objects from user objects
+            buyer = AlgorandAccount(buyer_obj.private_key)
+            seller = AlgorandAccount(seller_obj.private_key)
+            # Check if buyer has enough balance in their account
+            if account.check_balance(buyer.public_key) < ticket_price + 1000:
+                return Response({"error": "Insufficient buyer balance. Use https://bank.testnet.algorand.network/ to reload your account"}, status=status.HTTP_400_BAD_REQUEST)
+            # Check if seller has enough balance in their account
+            if account.check_balance(seller.public_key) < 1000:
+                return Response({"error": "Insufficient Seller balance. Use https://bank.testnet.algorand.network/ to reload your account"}, status=status.HTTP_400_BAD_REQUEST)
+            # Creating unsigned algo transfer txn
+            algo_transfer_txn = atomic_transfer.create_algo_transfer_txn(
+                buyer, seller, ticket_price)
+            # Creating unsigned NFT transfer txn
+            asset_transfer_txn = atomic_transfer.create_asset_transfer_txn(
+                seller, buyer, nft_id)
+            # Try atomic transfer
+            if atomic_transfer.transfer_atomically(algo_transfer_txn, asset_transfer_txn, buyer, seller):
+                ticket.on_sale = False
+                ticket.owner = buyer_obj
+                ticket.save()
+                serializer = TicketSerializer(ticket)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                # Atomic transfer failed, return server error
+                return Response({"error": "Atomic Transfer failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            print(e)
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @ api_view(["GET"])
