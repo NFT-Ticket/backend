@@ -11,7 +11,7 @@ def generate_qr(text):
     url = "https://qrtiger.com/api/qr/static"
     apikey = "Bearer 0e7fc850-c500-11ec-a952-e7d3ec2d6654"
 
-    encrypted_text = str(encrypt_text(text), "UTF-8")
+    encrypted_text = str(encrypt(text), "UTF-8")
     payload = {
                 "size": 500,
                 "colorDark": "rgb(5,64,128)",
