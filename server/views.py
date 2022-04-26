@@ -11,6 +11,7 @@ from datetime import datetime
 from algorand import account, nft, atomic_transfer
 from django.views.generic import TemplateView  # Import TemplateView
 from asgiref.sync import sync_to_async
+from datetime import date
 
 
 class HomePageView(TemplateView):
@@ -30,7 +31,7 @@ def user(request):
         if serializer.is_valid():
             # creates private/public key for algorand wallet
             algo_account = account.generate_algorand_keypair()
-            public_key, private_key = algo_account.public_key, algo_account.secret_key
+            public_key, private_key = algo_account.get_address(), algo_account.get_eprivate_key()
             serializer.save(wallet_addr=public_key, private_key=private_key)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -87,7 +88,7 @@ def user_balance(request, email_id):
     wallet_addr = serializer.data['wallet_addr']
     try:
         micro_algos = account.check_balance(wallet_addr)
-        return Response({'Micro ALGOs': micro_algos}, status=status.HTTP_200_OK)
+        return Response({'Micro_Algos': micro_algos}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"Server Exception": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -282,7 +283,14 @@ def ticket_with_id(request, ticket_id):
                 ticket.owner = buyer_obj
                 ticket.save()
                 serializer = TicketSerializer(ticket)
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                transaction = {"ticket": ticket_id, "buyer": buyer_obj.email,
+                               "seller": seller_obj.email, "price_sold": ticket_price, "date_sold": date.today()}
+                transaction_serializer = TransactionSerializer(
+                    data=transaction)
+                if transaction_serializer.is_valid():
+                    transaction_serializer.save()
+                    return Response(transaction_serializer.data, status=status.HTTP_200_OK)
+                return Response(transaction_serializer.errors, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             else:
                 # Atomic transfer failed, return server error
                 return Response({"error": "Atomic Transfer failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -298,5 +306,16 @@ def ticket_with_user_id(request, email_id):
         tickets = Ticket.objects.filter(owner=email_id)
         serializer = TicketSerializer(tickets, many=True)
     except Ticket.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@ api_view(["GET"])
+@ parser_classes([JSONParser])
+def transactions_with_user_id(request, email_id):
+    try:
+        transactions = Transaction.objects.filter(seller=email_id)
+        serializer = TransactionSerializer(transactions, many=True)
+    except Transaction.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     return Response(serializer.data, status=status.HTTP_200_OK)

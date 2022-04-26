@@ -55,3 +55,13 @@ class Ticket(models.Model):
     is_expired = models.BooleanField(null=False, blank=False)
     on_sale = models.BooleanField(null=False, blank=False)
     price = models.IntegerField(null=False, blank=False)
+
+
+class Transaction(models.Model):
+    ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE)
+    seller = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="seller")
+    buyer = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="buyer")
+    price_sold = models.IntegerField(null=False, blank=False)
+    date_sold = models.DateField(null=False, blank=False, default="2000-01-01")

@@ -65,7 +65,8 @@ Helper routes to be used to show warnings during signup
 
 `GET /api/user/ticket/<email_id>/` returns the list of tickets owned by the user \
 `GET /api/user/balance/<email_id>/` returns the balance of user in micro ALGOs \
-`GET /api/user/nft/<email_id>/` returns the list of all nfts owned by the user
+`GET /api/user/nft/<email_id>/` returns the list of all nfts owned by the user \
+`GET /api/user/transaction/<email_id>/` returns the list of transactions where tickets are sold by user with email_id
 
 #### Event Routes
 

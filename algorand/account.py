@@ -2,14 +2,6 @@ from algosdk import account, mnemonic
 from .algorandaccount import AlgorandAccount
 from .client import Client
 
-# Just a random account for testing purposes
-my_address = "V7WASWYSD7AEVPM6H46SWZB25CR7LQ5C275RE2VBCHSC7NU7FRRBKKHJK4"
-my_private = "K9Cd233ad3xb6rF9Z82vjluJvmujulFAeA9m8D0UPQSv7AlbEh/ASr2ePz0rZDroo/XDotf7EmqhEeQvtp8sYg=="
-
-# Second account
-public = "G75SW7GOF3RXEOIERPRX3KBSZ4KC47VPJFVOYZHB5AOKJWV3SPWEE7F7YA"
-private = "XXeEorfCRbDNVsa7g23CEjSmwoN3NFlAO+6xxtSzrvI3+yt8zi7jcjkEi+N9qDLPFC5+r0lq7GTh6Byk2ruT7A=="
-
 
 def generate_algorand_keypair():
     '''
