@@ -39,7 +39,7 @@ def generate_qr(text):
     return qr_url
 
 
-def encrypt_text(text):
+def encrypt(text):
 
     # Fernet key must be 32 url-safe base 64-encoded bytes
     key = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456".encode('ascii')
@@ -56,7 +56,7 @@ def encrypt_text(text):
     return encrypt_data
 
 
-def decrypt_text(text):
+def decrypt(text):
     
     # Fernet key must be 32 url-safe base 64-encoded bytes
     key = "ABCDEFGHIJKLMNOPQRSTUVWXYZ123456".encode('ascii')
