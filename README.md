@@ -7,15 +7,21 @@ Look at the tree below to understand where to put `.env` file and `ssl` folder
 <!-- prettier-ignore-start -->
 
 . (backend) \
-├── README.md  \
-├── Server/  \
-├── manage.py  \
-├── nft_backend/  \
-├── requirements.txt  \
-├── ssl/ \
+├── Procfile \
+├── README.md \
+├── algorand/ \
+├── encryptor/ \
+├── firebase_auth/ \
+├── ipfs/ \
+├── manage.py \
+├── nft_backend/ \
+├── qr-tiger/ \ 
+├── requirements.txt \
+├── server/ \
+├── ssl/ \ 
+├── static/ \
 ├── venv/ \
-└── .env
-
+└── .env \
 <!-- prettier-ignore-end -->
 
 ### Install Virtual Environment
@@ -52,7 +58,7 @@ While this may work for some request methods like `GET`, methods like `PUT`, `DE
 #### Utility Routes
 
 Helper routes to be used to show warnings during signup
-`GET /api/username/` returns a JSON object with list of all usernames in db
+`GET /api/username/` returns a JSON object with list of all usernames in db \
 `GET /api/email/` returns a JSON object with list of all emails in db
 
 #### User Routes
@@ -71,7 +77,7 @@ Helper routes to be used to show warnings during signup
 #### Event Routes
 
 `GET /api/event/` lists all events in the future. This will omit all past events \
-`GET /api/event/ticket/<event_id>/` returns a list of secondary tickets on sale for the event.
+`GET /api/event/ticket/<event_id>/` returns a list of secondary tickets on sale for the event. \
 `POST /api/event/` adds new new event to the db. Params required: `vendor<email>, ticket_quantity<int>, title<str>, description<str>, images:List[str], street_address<str>, city<str>, zipcode<int>, date, time`\
 `GET /api/event/<event_id>/` returns the event with `<event_id>` \
 `PUT /api/event/<event_id>/` modifies the event with `<event_id>` \
@@ -79,10 +85,9 @@ Helper routes to be used to show warnings during signup
 #### Ticket Routes
 
 `GET /api/ticket/<ticket_id>/` returns the ticket owned by user after purchase. \
+
 `POST /api/ticket/` with params: `event_id` and `buyer<email_id>` as body makes an atomic transaction where ALGOS are transferred to the seller and NFT is transferred to the user atomically. If either of the transactions fail, the whole transaction fails. If the transactions are successful, a ticket is issued for the buyer. \
+
 `PUT /api/ticket/<ticket_id>/` with modified ticket as the body changes the ticket object in the db. Use this when a user wants to sell their ticket and adjust price to the ticket for sale. \
+
 `PATCH /api/ticket/<ticket_id>/` with params: `buyer<email_id>` as body makes an atomic transaction where ALGOS are transferred to the owner of `<ticket_id>` and NFT is transferred to `buyer<email_id>`. If the atomic transfer is successful, the Ticket database is changed where the owner is changed from seller to new buyer and the `on_sale` property is set to False.
-
-#### Other Routes
-
-Not fully tested yet. check `server/views.py` and `server/urls.py`
