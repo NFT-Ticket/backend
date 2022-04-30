@@ -146,6 +146,16 @@ def event_with_id(request, event_id):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@ api_view(["GET"])
+def event_tickets(request, event_id):
+    try:
+        tickets = Ticket.objects.filter(event=event_id, on_sale=True)
+        serializer = TicketSerializer(tickets, many=True)
+    except Ticket.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 # ------------------- Untested Code start ----------------------------
 @ api_view(["GET"])
 def user_ticket(request, user_id):
