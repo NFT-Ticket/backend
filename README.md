@@ -21,10 +21,10 @@ Look at the tree below to understand where to put `.env` file and `ssl` folder
 ├── ipfs/ \
 ├── manage.py \
 ├── nft_backend/ \
-├── qrtiger/
+├── qrtiger/ \
 ├── requirements.txt \
 ├── server/ \
-├── ssl/ 
+├── ssl/ \
 ├── static/ \
 ├── venv/ \
 └── .env 
@@ -63,7 +63,7 @@ While this may work for some request methods like `GET`, methods like `PUT`, `DE
 
 #### Utility Routes
 
-Helper routes to be used to show warnings during signup
+Helper routes to be used to show warnings during signup \
 `GET /api/username/` returns a JSON object with list of all usernames in db \
 `GET /api/email/` returns a JSON object with list of all emails in db
 
@@ -87,6 +87,7 @@ Helper routes to be used to show warnings during signup
 `POST /api/event/` adds new new event to the db. Params required: `vendor<email>, ticket_quantity<int>, title<str>, description<str>, images:List[str], street_address<str>, city<str>, zipcode<int>, date, time`\
 `GET /api/event/<event_id>/` returns the event with `<event_id>` \
 `PUT /api/event/<event_id>/` modifies the event with `<event_id>` \
+`GET /api/event/search/?query=<url_encoded_query_string>` search the database for events where either of title, description, street_address, or city matches the query string. The match is done using django's `__icontains` module that uses SQL LIKE `%query%` to search for text that might be a match.
 
 #### Ticket Routes
 

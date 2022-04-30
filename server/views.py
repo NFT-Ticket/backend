@@ -10,8 +10,8 @@ from server.serializer import *
 from datetime import datetime
 from algorand import account, nft, atomic_transfer
 from django.views.generic import TemplateView  # Import TemplateView
-from asgiref.sync import sync_to_async
 from datetime import date
+from django.db.models import Q
 
 
 class HomePageView(TemplateView):
@@ -156,6 +156,21 @@ def event_tickets(request, event_id):
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@ api_view(["GET"])
+@parser_classes([JSONParser])
+def event_search(request):
+    try:
+        query = request.GET.get('query')
+        events = Event.objects.filter(description__icontains=query)
+        events = Event.objects.filter(
+            Q(description__icontains=query) | Q(title__icontains=query) |
+            Q(street_address__icontains=query) | Q(city__icontains=query))
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"Error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
 # ------------------- Untested Code start ----------------------------
 @ api_view(["GET"])
 def user_ticket(request, user_id):
@@ -180,7 +195,7 @@ def event_ticket(request, event_id):
 
 
 @ api_view(["GET"])
-@parser_classes([JSONParser])
+@ parser_classes([JSONParser])
 def get_emails(request):
     emails = User.objects.values('email')
     emails = [email["email"] for email in emails]
@@ -188,15 +203,15 @@ def get_emails(request):
 
 
 @ api_view(["GET"])
-@parser_classes([JSONParser])
+@ parser_classes([JSONParser])
 def get_usernames(request):
     usernames = User.objects.values('username')
     usernames = [username["username"] for username in usernames]
     return Response({"usernames": usernames}, status=status.HTTP_200_OK)
 
 
-@api_view(["POST"])
-@parser_classes([JSONParser])
+@ api_view(["POST"])
+@ parser_classes([JSONParser])
 def ticket(request):
     try:
         event_id = request.data["event_id"]
