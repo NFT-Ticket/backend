@@ -1,5 +1,11 @@
 # NFT Django Backend API
 
+![NFT logo]("static/nft_logo.png")
+
+### Introduction to NFTicket
+
+TODO: Add the description here
+
 ### Folder Structure
 
 Look at the tree below to understand where to put `.env` file and `ssl` folder
@@ -15,13 +21,13 @@ Look at the tree below to understand where to put `.env` file and `ssl` folder
 ├── ipfs/ \
 ├── manage.py \
 ├── nft_backend/ \
-├── qr-tiger/ \ 
+├── qrtiger/
 ├── requirements.txt \
 ├── server/ \
-├── ssl/ \ 
+├── ssl/ 
 ├── static/ \
 ├── venv/ \
-└── .env \
+└── .env 
 <!-- prettier-ignore-end -->
 
 ### Install Virtual Environment
