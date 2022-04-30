@@ -71,6 +71,7 @@ Helper routes to be used to show warnings during signup
 #### Event Routes
 
 `GET /api/event/` lists all events in the future. This will omit all past events \
+`GET /api/event/ticket/<event_id>/` returns a list of secondary tickets on sale for the event.
 `POST /api/event/` adds new new event to the db. Params required: `vendor<email>, ticket_quantity<int>, title<str>, description<str>, images:List[str], street_address<str>, city<str>, zipcode<int>, date, time`\
 `GET /api/event/<event_id>/` returns the event with `<event_id>` \
 `PUT /api/event/<event_id>/` modifies the event with `<event_id>` \
