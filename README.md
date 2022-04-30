@@ -4,7 +4,7 @@
 
 ### Introduction to NFTicket
 
-TODO: Add the description here
+NFTicket is a plaform to purchase and store tickets securely on your phone. It improves upon the old ticket vendor model by implementing blockchain technology for the security and accessibility of your tickets. Our users spend less time managing their tickets and more time enjoying their events!
 
 ### Folder Structure
 
