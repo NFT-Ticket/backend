@@ -1,6 +1,6 @@
 # NFT Django Backend API
 
-![NFT logo]("static/nft_logo.png")
+<img src="static/nft_logo.png">
 
 ### Introduction to NFTicket
 
