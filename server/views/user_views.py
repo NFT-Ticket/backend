@@ -24,8 +24,10 @@ def user(request):
         if serializer.is_valid():
             # creates private/public key for algorand wallet
             algo_account = account.generate_algorand_keypair()
-            public_key, private_key = algo_account.get_address(), algo_account.get_eprivate_key()
-            serializer.save(wallet_addr=public_key, private_key=private_key)
+            public_key, encrypted_private_key = algo_account.get_address(
+            ), algo_account.get_encrypted_private_key()
+            serializer.save(wallet_addr=public_key,
+                            private_key=encrypted_private_key)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

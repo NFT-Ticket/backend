@@ -1,6 +1,7 @@
 from algosdk import account, mnemonic
 from .algorandaccount import AlgorandAccount
 from .client import Client
+from security import manager
 
 
 def generate_algorand_keypair():
@@ -15,7 +16,8 @@ def generate_algorand_keypair():
     print("My address: {}".format(address))
     print("My private key: {}".format(private_key))
     print("My passphrase: {}".format(acc_mnemonic))
-    return AlgorandAccount(private_key)
+    encrypted_key = manager.encrypt(private_key)
+    return AlgorandAccount(encrypted_key)
 
 
 def check_balance(address):
