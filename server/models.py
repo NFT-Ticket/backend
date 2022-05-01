@@ -10,7 +10,7 @@ class User(models.Model):
     is_seller = models.BooleanField(null=False, blank=False)
     avtar_url = models.URLField(max_length=200, null=False, blank=False)
     wallet_addr = models.CharField(max_length=100, blank=True)
-    private_key = models.CharField(max_length=100, blank=True)
+    private_key = models.CharField(max_length=256, blank=True)
 
     def __str__(self):
         return f"name: {self.first_name + ' ' + self.last_name} username: {self.username} email: {self.email}"
