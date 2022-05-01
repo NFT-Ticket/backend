@@ -12,8 +12,7 @@ class AlgorandAccount:
         return self.public_key
 
     def get_eprivate_key(self) -> str:
-        '''Returns the encrypted private_key'''
-        return self.key_manager.encrypt(self.secret_key)
+        return self.secret_key
 
     def get_mnemonic(self) -> str:
         return mnemonic.from_private_key(self.secret_key)
