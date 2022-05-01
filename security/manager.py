@@ -5,16 +5,16 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-
 SYMMETRIC_KEY = str.encode(os.getenv("SYMMETRIC_KEY"))
 
 
 def encrypt(data):
     '''Encrypts the data using symmetric key and returns a cipher text'''
     data = str.encode(data)
-    return Fernet.encrypt(Fernet(SYMMETRIC_KEY), data)
+    return Fernet.encrypt(Fernet(SYMMETRIC_KEY), data).decode()
 
 
 def decrypt(cipher):
     '''Takes the cipher text and decrypts it using symmetric key'''
+    cipher = str.encode(cipher)
     return Fernet.decrypt(Fernet(SYMMETRIC_KEY), cipher).decode()
