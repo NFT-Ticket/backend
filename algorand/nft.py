@@ -8,7 +8,6 @@ import json
 # Unit name should be 8 char or less
 
 def create_nft(nft_name, unit_name, amt, creator):
-    print("\n\n\nCalling create nft function\n\n\n")
     algod_client = Client.get_algod_client()
 
     # Get network params for transactions before every transaction.
@@ -150,29 +149,3 @@ def transfer_nft(sender, receiver, asset_id):
     # The balance should now be 10.
     utilities.print_asset_holding(algod_client, receiver.public_key, asset_id)
     return txid
-
-# nft_name = "Roshan"
-# amt = 1
-# pk = "V7WASWYSD7AEVPM6H46SWZB25CR7LQ5C275RE2VBCHSC7NU7FRRBKKHJK4"
-# sk = "K9Cd233ad3xb6rF9Z82vjluJvmujulFAeA9m8D0UPQSv7AlbEh/ASr2ePz0rZDroo/XDotf7EmqhEeQvtp8sYg=="
-# creator = AlgorandAccount(pk, sk)
-# create_nft(nft_name, amt, creator, creator)
-# asset_id = "84222697"
-
-
-# r_pk = "V7WASWYSD7AEVPM6H46SWZB25CR7LQ5C275RE2VBCHSC7NU7FRRBKKHJK4"
-# r_sk = "K9Cd233ad3xb6rF9Z82vjluJvmujulFAeA9m8D0UPQSv7AlbEh/ASr2ePz0rZDroo/XDotf7EmqhEeQvtp8sYg=="
-# roshan = AlgorandAccount(r_sk)
-# a_pk = "G75SW7GOF3RXEOIERPRX3KBSZ4KC47VPJFVOYZHB5AOKJWV3SPWEE7F7YA"
-# a_sk = "XXeEorfCRbDNVsa7g23CEjSmwoN3NFlAO+6xxtSzrvI3+yt8zi7jcjkEi+N9qDLPFC5+r0lq7GTh6Byk2ruT7A=="
-# adrian = AlgorandAccount(a_sk)
-# asset_id = "84222697"
-# transfer_nft(roshan, adrian, asset_id)
-'''
-Signed transaction with txID: 72HSY4UYZSUMXF4DVCG73MVUMPBCZLZRRNPC467QEOWTNHFATGJA
-TXID:  72HSY4UYZSUMXF4DVCG73MVUMPBCZLZRRNPC467QEOWTNHFATGJA
-Result confirmed in round: 21064254
-Signed transaction with txID: RLOBSZ3DPGEIHL5CWUCZJTIKDLDXP2DWQNC7PPYNX5GDOCKN7X5Q
-TXID:  RLOBSZ3DPGEIHL5CWUCZJTIKDLDXP2DWQNC7PPYNX5GDOCKN7X5Q
-Result confirmed in round: 21064256
-'''
