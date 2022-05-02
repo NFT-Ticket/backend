@@ -66,6 +66,10 @@ def event_with_id(request, event_id):
     if request.method == "GET":
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == "PUT":
+        ticket_quantity = request.data["ticket_quantity"]
+        # Raise error if frontend tries to change ticket quantity
+        if ticket_quantity != event.ticket_quantity:
+            return Response({"Error": "Ticket quantity is immutable field and cannot change"}, status=status.HTTP_400_BAD_REQUEST)
         serializer = EventSerializer(event, data=request.data)
         if serializer.is_valid():
             serializer.save()
