@@ -55,7 +55,6 @@ def check_asset_ownership(address, nft_id):
     algod_client = Client.get_algod_client()
     account_info = algod_client.account_info(address)
     asset_list = account_info['assets']
-    print(asset_list)
     for asset in asset_list:
         if asset['asset-id'] == int(nft_id) and asset['amount'] > 0:
             return True
