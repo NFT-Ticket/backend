@@ -155,9 +155,9 @@ def ticket_with_user_id(request, email_id):
 @parser_classes([JSONParser])
 def verify_ticket(request):
     '''
-    Searches the database for the given query and returns a list of matching event objects
-    Search is performed in description, title, street_address, and city columns of the event table
-    Search is performed with SQL LIKE %% query instead of an exact query match
+    Takes two query parameters: email and nftid and searches the 
+    algorand blockchain if user with given email owns the given nftid or not
+    redirects to success or failure page based on input query
     '''
     try:
         email = request.GET.get('owner')
