@@ -6,6 +6,10 @@
 
 NFTicket is a plaform to purchase and store tickets securely on your phone. It improves upon the old ticket vendor model by implementing blockchain technology for the security and accessibility of your tickets. Our users spend less time managing their tickets and more time enjoying their events!
 
+### System Architecture
+
+<img src="static/system_architecture.png">
+
 ### Folder Structure
 
 Look at the tree below to understand where to put `.env` file and `ssl` folder
@@ -21,7 +25,6 @@ Look at the tree below to understand where to put `.env` file and `ssl` folder
 ├── ipfs/ \
 ├── manage.py \
 ├── nft_backend/ \
-├── qrtiger/ \
 ├── requirements.txt \
 ├── server/ \
 ├── ssl/ \

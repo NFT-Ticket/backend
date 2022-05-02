@@ -16,7 +16,7 @@ def create_nft(nft_name, unit_name, amt, creator):
     # Create NFT Transaction
     manager = creator
     # This should be IPFS Meta data URL
-    url = "https://nfticket-backend.herokuapp.com/"
+    url = "https://nfticket.com/"
     txn = AssetConfigTxn(
         sender=creator.public_key,
         sp=params,

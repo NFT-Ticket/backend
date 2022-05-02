@@ -8,6 +8,7 @@ from rest_framework import status
 from server.serializer import *
 from algorand import account, atomic_transfer
 from datetime import date
+from django.shortcuts import redirect
 
 
 @ api_view(["POST"])
@@ -148,3 +149,28 @@ def ticket_with_user_id(request, email_id):
     except Ticket.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@ api_view(["GET"])
+@parser_classes([JSONParser])
+def verify_ticket(request):
+    '''
+    Searches the database for the given query and returns a list of matching event objects
+    Search is performed in description, title, street_address, and city columns of the event table
+    Search is performed with SQL LIKE %% query instead of an exact query match
+    '''
+    try:
+        email = request.GET.get('owner')
+        nft_id = request.GET.get('nftid')
+        user = User.objects.get(pk=email)
+        wallet = user.wallet_addr
+        # If user owns the nft, redirect to valid ticket
+        if account.check_asset_ownership(wallet, nft_id):
+            response = redirect('/success/')
+            return response
+        else:
+            response = redirect('/failure/')
+            return response
+    except Exception as e:
+        print(e)
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

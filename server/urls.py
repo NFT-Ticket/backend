@@ -18,6 +18,8 @@ urlpatterns = [
 
     path(r"ticket/", ticket_views.ticket),
     path(r"ticket/<str:ticket_id>/", ticket_views.ticket_with_id),
+    path(r"verify/", ticket_views.verify_ticket),
+
 
     path(r"email/", user_views.get_emails),
     path(r"username/", user_views.get_usernames),

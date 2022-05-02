@@ -45,3 +45,18 @@ def check_assets(address):
     account_info = algod_client.account_info(address)
     asset_list = account_info['assets']
     return asset_list
+
+
+def check_asset_ownership(address, nft_id):
+    '''
+    Takes in a asset id and a wallet address and returns a boolean to 
+    indicate whether the user with given address owns the nft_id or not
+    '''
+    algod_client = Client.get_algod_client()
+    account_info = algod_client.account_info(address)
+    asset_list = account_info['assets']
+    print(asset_list)
+    for asset in asset_list:
+        if asset['asset-id'] == int(nft_id) and asset['amount'] > 0:
+            return True
+    return False

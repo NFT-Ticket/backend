@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from server.views.views import HomePageView
+from server.views.views import HomePageView, VerifiedView, NotVerifiedView
 
 urlpatterns = [path("admin/", admin.site.urls),
                path("api/", include("server.urls")),
-               path('', HomePageView.as_view(), name='home')
+               path('', HomePageView.as_view(), name='home'),
+               path('success/', VerifiedView.as_view(), name='verified'),
+               path('failure/', NotVerifiedView.as_view(), name='not_verified')
                ]
