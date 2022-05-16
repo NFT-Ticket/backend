@@ -6,6 +6,21 @@
 
 NFTicket is a plaform to purchase and store tickets securely on your phone. It improves upon the old ticket vendor model by implementing blockchain technology for the security and accessibility of your tickets. Our users spend less time managing their tickets and more time enjoying their events!
 
+### Video recording showing App features in iPhone
+
+Since Apple's appstore policy prevents us from publishing our app to the appstore, we made a video recording to show the key features of the app running in a build mode. Andriod users should be able to download the app by downloading the Expo Go app and scanning the QR code provided in the link in the google sheet.
+
+[![NFT ios App demo](https://img.youtube.com/vi/bd4xmAp97L4/0.jpg)](https://www.youtube.com/watch?v=bd4xmAp97L4 "NFT ios App demo")
+
+### For Android Users
+
+1. Download the Expo go app from playstore
+   https://play.google.com/store/apps/details?id=host.exp.exponent&hl=en_US&gl=US
+2. Scan the QR code below:
+   <img src="static/expo.png">
+3. Create account, copy Wallet Address and then reload the account from the Test Net Faucet by visiting https://bank.testnet.algorand.network/
+4. use the app; buy and sell tickets
+
 ### System Architecture
 
 <img src="static/system_architecture.png">
